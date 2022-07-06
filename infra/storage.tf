@@ -1,3 +1,6 @@
+# © 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
+
+
 resource "azurerm_storage_account" "dbtcoreazure" {
   name                     = "sta${var.stack_name}"
   resource_group_name      = azurerm_resource_group.rg.name
@@ -5,7 +8,7 @@ resource "azurerm_storage_account" "dbtcoreazure" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
   #account_kind             = "BlobStorage"
-  tags                     = var.custom_tags
+  tags = var.custom_tags
 }
 
 resource "azurerm_storage_data_lake_gen2_filesystem" "dlstorage" {
@@ -23,7 +26,7 @@ resource "azurerm_storage_share" "dbtcoreazure" {
   name                 = "share"
   storage_account_name = azurerm_storage_account.dbtcoreazure.name
   quota                = 1
-  depends_on   = [azurerm_storage_account.dbtcoreazure]
+  depends_on           = [azurerm_storage_account.dbtcoreazure]
 }
 
 #resource "azurerm_storage_account" "adls2" {

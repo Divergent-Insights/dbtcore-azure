@@ -1,3 +1,6 @@
+# © 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
+
+
 # Container registry
 resource "azurerm_container_registry" "acr" {
   name                = "cr${var.stack_name}"
@@ -10,15 +13,18 @@ resource "azurerm_container_registry" "acr" {
 # Creating Docker image manually
 resource "null_resource" "build_dbtcore_image" {
 
-  triggers = {
-    always_run = "${timestamp()}"
-  }
+  #triggers = {
+  #  always_run = "${timestamp()}"
+  #}
 
   provisioner "local-exec" {
     command = <<BUILD_CMD_EOF
-      az acr login --name crdbtcoreazure
-      az acr build -t divergent-insights/dbtcore-azure:v1 --registry crdbtcoreazure ../dbtcore_image
+az acr login --name crdbtcoreazure
+
+az acr build -t divergent-insights/dbtcore-azure:v1 --registry crdbtcoreazure ../dbtcore_image
     BUILD_CMD_EOF
+
+    interpreter = ["Powershell", "-Command"]
 
     environment = {
       ACR       = azurerm_container_registry.acr.name
@@ -28,16 +34,13 @@ resource "null_resource" "build_dbtcore_image" {
   depends_on = [azurerm_container_registry.acr]
 }
 
+# Create the relevant Azure Container group to run the dbt image
 resource "azurerm_container_group" "acg_dbt" {
   name                = "cg${var.stack_name}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   restart_policy      = "Never"
   os_type             = "Linux"
-
-  # Though this is not needed, its a current bug in the provider. we are
-  # opening up a dummy port for now. may be in the future this will get fixed.
-  #ip_address_type = "Public"
 
   identity {
     type         = "UserAssigned"
@@ -56,12 +59,14 @@ resource "azurerm_container_group" "acg_dbt" {
     cpu    = 1
     memory = 1
     environment_variables = {
-      #"ENV_AZSUB"        = data.azurerm_client_config.current.subscription_id
-      #"ENV_RG"           = azurerm_resource_group.rg.name
-      #"ENV_KV_URL"       = azurerm_key_vault.kv.vault_uri
-      #"ENV_KV_SFLK"      = azurerm_key_vault_secret.kvs_sflk_conn.name
       "ENV_DBT_PROJECT_TAR" = "/volume-dbt-projects/data.tar"
-      #"ENV_DBT_RUN_CMD"  = "dbtcore_image/dbt_datapipeline.sh"
+      "DBT_SYNAPSE_SERVER" = azurerm_synapse_workspace.this.name
+      "DBT_SYNAPSE_DATABASE" = azurerm_synapse_sql_pool.this.name
+    }
+
+    secure_environment_variables = {
+      "DBT_SYNAPSE_USER" = azurerm_key_vault_secret.sql_administrator_login.value
+      "DBT_SYNAPSE_PASSWORD" = azurerm_key_vault_secret.sql_administrator_login_password.value
     }
 
     volume {
@@ -84,14 +89,19 @@ resource "azurerm_container_group" "acg_dbt" {
   tags       = var.custom_tags
 }
 
+# Package the dbt project and upload on the Storage Account/Share
 resource "null_resource" "dbt_project_tar" {
 
   triggers = {
     always_run = "${timestamp()}"
   }
-      #tar -cvzf ../data.tar ../data
+
   provisioner "local-exec" {
-    command = "az storage file upload --share-name share --source ../data.tar --account-name $env:storage_account_name --account-key $env:storage_account_pak"
+    command = <<BUILD_CMD_EOF
+tar -cvzf ../data.tar ../data
+
+az storage file upload --share-name share --source ../data.tar --account-name $env:storage_account_name --account-key $env:storage_account_pak
+    BUILD_CMD_EOF
 
     interpreter = ["Powershell", "-Command"]
 

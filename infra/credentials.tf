@@ -1,3 +1,6 @@
+# © 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
+
+
 resource "azurerm_user_assigned_identity" "uai" {
   name                = "id-ua-${var.stack_name}"
   resource_group_name = azurerm_resource_group.rg.name

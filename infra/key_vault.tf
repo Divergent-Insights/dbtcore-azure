@@ -1,3 +1,6 @@
+# © 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
+
+
 # Creating vanilla Key Vault
 resource "azurerm_key_vault" "kv" {
   name                = "kv${var.stack_name}"
@@ -13,10 +16,18 @@ resource "azurerm_key_vault_access_policy" "terraform_user" {
   key_vault_id = azurerm_key_vault.kv.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = data.azurerm_client_config.current.object_id
-  #object_id = azurerm_user_assigned_identity.uai.principal_id
 
   secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
 }
+
+resource "azurerm_key_vault_access_policy" "adf" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_data_factory.dbtcore_execution.identity[0].principal_id
+
+  secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
+}
+
 
 # Store the Storage Account (sa) Shared Access Signatures (SAS)
 # in Key Vault (kv) as it will required to copy
@@ -30,25 +41,25 @@ resource "azurerm_key_vault_access_policy" "terraform_user" {
 #  tags         = var.custom_tags
 #}
 
-# Store the service principal credentials
-# to enable to deploy aci on the fly.
-#resource "azurerm_key_vault_secret" "terraform_user" {
-#  name         = "terraform-user-id"
-#  value        = data.azurerm_client_config.current.client_id
-#  content_type = "Terraform user name"
-#  key_vault_id = azurerm_key_vault.kv.id
-#  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
-#  tags         = var.custom_tags
-#}
-#
-#resource "azurerm_key_vault_secret" "kvs_acr_sp_scrt" {
-#  name         = "terraform-user-secret"
-#  value        = var.terraform_service_principal_secret
-#  content_type = "Terraform user password"
-#  key_vault_id = azurerm_key_vault.kv.id
-#  #depends_on   = [azurerm_key_vault_access_policy.terraform_user]
-#  tags = var.custom_tags
-#}
+# Terraform user credentials
+# This is required by AZD
+resource "azurerm_key_vault_secret" "terraform_user" {
+  name         = "terraform-user-id"
+  value        = data.azurerm_client_config.current.client_id
+  content_type = "Terraform user name"
+  key_vault_id = azurerm_key_vault.kv.id
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  tags         = var.custom_tags
+}
+
+resource "azurerm_key_vault_secret" "kvs_acr_sp_scrt" {
+  name         = "terraform-user-secret"
+  value        = var.terraform_service_principal_secret
+  content_type = "Terraform user password"
+  key_vault_id = azurerm_key_vault.kv.id
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  tags = var.custom_tags
+}
 
 # Synapse login credentials
 # Only required during setup and can be disabled
@@ -74,22 +85,3 @@ resource "azurerm_key_vault_secret" "sql_administrator_login_password" {
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
   tags         = var.custom_tags
 }
-
-#resource "azurerm_key_vault_secret" "kvs_sflk_conn" {
-#  name         = "sflk-conn"
-#  value        = <<SCRT_EOF
-#		{
-#       'SNOWSQL_ACCOUNT': 'abc.us-east-1',
-#       'SNOWSQL_USER': 'SOMEBODY',
-#       'DBT_PASSWORD': 'abracadabra',
-#       'SNOWSQL_ROLE': 'PUBLIC',
-#       'SNOWSQL_DATABASE': 'DEMO_DB',
-#       'SNOWSQL_WAREHOUSE': 'DEMO_WH'
-#     }
-#	SCRT_EOF
-#  content_type = "Synapse connection info"
-#  key_vault_id = azurerm_key_vault.kv.id
-#  depends_on   = [azurerm_key_vault_access_policy.kv_acp_deployer]
-#  tags         = var.custom_tags
-#}
-#

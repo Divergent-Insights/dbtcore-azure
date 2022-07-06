@@ -1,8 +1,11 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "Copying and untaring dbt project"
-cp $ENV_DBT_PROJECT_TAR /tmp
-tar -xvf /tmp/data.tar
-ls -l /tmp/data/
+cp $ENV_DBT_PROJECT_TAR /
+tar -xvf /data.tar
+ls -l /data
+ls -l $HOME/.dbt
 
-#/run_pipeline.sh "$ENV_DBT_RUN_CMD"
+cd /data
+dbt debug
+dbt run
