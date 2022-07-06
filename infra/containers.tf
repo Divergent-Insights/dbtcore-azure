@@ -59,7 +59,7 @@ resource "azurerm_container_group" "acg_dbt" {
     cpu    = 1
     memory = 1
     environment_variables = {
-      "ENV_DBT_PROJECT_TAR" = "/volume-dbt-projects/data.tar"
+      "ENV_DBT_PROJECT_TAR" = "/volume-dbt-projects/dbtproject.tar"
       "DBT_SYNAPSE_SERVER" = azurerm_synapse_workspace.this.name
       "DBT_SYNAPSE_DATABASE" = azurerm_synapse_sql_pool.this.name
     }
@@ -98,9 +98,9 @@ resource "null_resource" "dbt_project_tar" {
 
   provisioner "local-exec" {
     command = <<BUILD_CMD_EOF
-tar -cvzf ../data.tar ../data
+tar -cvzf ../dbtproject.tar ../dbtproject
 
-az storage file upload --share-name share --source ../data.tar --account-name $env:storage_account_name --account-key $env:storage_account_pak
+az storage file upload --share-name share --source ../dbtproject.tar --account-name $env:storage_account_name --account-key $env:storage_account_pak
     BUILD_CMD_EOF
 
     interpreter = ["Powershell", "-Command"]
