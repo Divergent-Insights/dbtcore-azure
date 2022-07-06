@@ -29,10 +29,10 @@ resource "azurerm_data_factory_pipeline" "dbt_execution" {
 
   parameters = {
     "AzureContainerGroup" = azurerm_container_group.acg_dbt.name
-    "AzureResourceGroup" = azurerm_resource_group.rg.name
+    "AzureResourceGroup"  = azurerm_resource_group.rg.name
     "AzureSubscriptionId" = data.azurerm_client_config.current.subscription_id
-    "AzureTenantId" = data.azurerm_client_config.current.tenant_id
-    "SleepTime" = 120
+    "AzureTenantId"       = data.azurerm_client_config.current.tenant_id
+    "SleepTime"           = 120
   }
 
   activities_json = <<EOF_JSON

@@ -59,13 +59,13 @@ resource "azurerm_container_group" "acg_dbt" {
     cpu    = 1
     memory = 1
     environment_variables = {
-      "ENV_DBT_PROJECT_TAR" = "/volume-dbt-projects/dbtproject.tar"
-      "DBT_SYNAPSE_SERVER" = azurerm_synapse_workspace.this.name
+      "ENV_DBT_PROJECT_TAR"  = "/volume-dbt-projects/dbtproject.tar"
+      "DBT_SYNAPSE_SERVER"   = azurerm_synapse_workspace.this.name
       "DBT_SYNAPSE_DATABASE" = azurerm_synapse_sql_pool.this.name
     }
 
     secure_environment_variables = {
-      "DBT_SYNAPSE_USER" = azurerm_key_vault_secret.sql_administrator_login.value
+      "DBT_SYNAPSE_USER"     = azurerm_key_vault_secret.sql_administrator_login.value
       "DBT_SYNAPSE_PASSWORD" = azurerm_key_vault_secret.sql_administrator_login_password.value
     }
 

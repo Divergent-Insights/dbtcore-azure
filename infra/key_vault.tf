@@ -46,7 +46,7 @@ resource "azurerm_key_vault_secret" "kvs_acr_sp_scrt" {
   content_type = "Terraform user password"
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
-  tags = var.custom_tags
+  tags         = var.custom_tags
 }
 
 # Synapse login credentials
