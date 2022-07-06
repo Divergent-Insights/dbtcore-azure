@@ -40,9 +40,3 @@ resource "azurerm_synapse_firewall_rule" "allow_azure_services" {
   start_ip_address     = "0.0.0.0"
   end_ip_address       = "255.255.255.255"
 }
-
-#resource "azurerm_role_assignment" "this" {
-#  scope                = azurerm_storage_account.synapse.id
-#  role_definition_name = "Storage Blob Data Contributor"
-#  principal_id         = data.azurerm_client_config.current.object_id
-#}

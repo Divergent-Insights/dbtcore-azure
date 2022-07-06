@@ -28,21 +28,9 @@ resource "azurerm_key_vault_access_policy" "adf" {
   secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
 }
 
-
-# Store the Storage Account (sa) Shared Access Signatures (SAS)
-# in Key Vault (kv) as it will required to copy
-# dbt projects into the docker image
-#resource "azurerm_key_vault_secret" "storage_account" {
-#  name         = "kvs-sa-sas-${var.stack_name}"
-#  value        = azurerm_storage_account.dbtcoreazure.primary_access_key
-#  content_type = "SAS key for accessing the storage account, which holds the dbt code"
-#  key_vault_id = azurerm_key_vault.kv.id
-#  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
-#  tags         = var.custom_tags
-#}
-
 # Terraform user credentials
-# This is required by AZD
+# This is required by Azure Data Factory to fetch the credentials
+# that will be used to execute dbt via ACG/ACI
 resource "azurerm_key_vault_secret" "terraform_user" {
   name         = "terraform-user-id"
   value        = data.azurerm_client_config.current.client_id
