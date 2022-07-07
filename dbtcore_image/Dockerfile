@@ -25,7 +25,7 @@ RUN mkdir /root/.dbt
 ADD profiles.yml /root/.dbt
 ENV DBT_PROFILES_DIR /root/.dbt
 
-#ADD test/data.tar /
+#ADD test/dbtproject.tar /
 
 ENV PYTHONUNBUFFERED=1
 

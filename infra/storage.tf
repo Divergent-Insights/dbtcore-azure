@@ -13,13 +13,14 @@ resource "azurerm_storage_account" "dbtcoreazure" {
 resource "azurerm_storage_data_lake_gen2_filesystem" "dlstorage" {
   name               = "stdl${var.stack_name}"
   storage_account_id = azurerm_storage_account.dbtcoreazure.id
+  depends_on         = [azurerm_storage_account.dbtcoreazure]
 }
 
-resource "azurerm_storage_container" "static" {
-  name                  = "static"
-  storage_account_name  = azurerm_storage_account.dbtcoreazure.name
-  container_access_type = "private"
-}
+#resource "azurerm_storage_container" "static" {
+#  name                  = "static"
+#  storage_account_name  = azurerm_storage_account.dbtcoreazure.name
+#  container_access_type = "private"
+#}
 
 resource "azurerm_storage_share" "dbtcoreazure" {
   name                 = "share"

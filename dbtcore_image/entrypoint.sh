@@ -2,10 +2,10 @@
 
 echo "Copying and untaring dbt project"
 cp $ENV_DBT_PROJECT_TAR /
-tar -xvf /data.tar
-ls -l /data
+tar -xvf /dbtproject.tar
+ls -l /dbtproject
 ls -l $HOME/.dbt
 
-cd /data
+cd /dbtproject
 dbt debug
 dbt run
