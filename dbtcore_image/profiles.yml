@@ -7,7 +7,7 @@ dbtcore_azure:
     synapse:
       type: synapse
       driver: 'ODBC Driver 17 for SQL Server'
-      server: "{{ env_var('DBT_SYNAPSE_SERVER') }}"
+      server: "{{ env_var('DBT_SYNAPSE_SERVER') }}.sql.azuresynapse.net"
       port: 1433
       database: "{{ env_var('DBT_SYNAPSE_DATABASE') }}"
       schema: schema_name
