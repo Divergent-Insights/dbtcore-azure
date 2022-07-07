@@ -60,14 +60,9 @@ resource "azurerm_key_vault_secret" "sql_administrator_login" {
   tags         = var.custom_tags
 }
 
-resource "random_password" "sql_administrator_login" {
-  length  = 16
-  special = false
-}
-
 resource "azurerm_key_vault_secret" "sql_administrator_login_password" {
   name         = "synpase-sql-administrator-login-password"
-  value        = random_password.sql_administrator_login.result
+  value        = var.synapse_login_password
   content_type = "Synapse Admin Login - Password"
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]

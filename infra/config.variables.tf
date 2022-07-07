@@ -10,6 +10,10 @@ variable "terraform_service_principal_secret" {
   description = "Terraform Service Principal secret"
 }
 
+variable "synapse_login_password" {
+  description = "Terraform Service Principal secret"
+}
+
 variable "module_name" {
   default = "dbtonaz"
 }
