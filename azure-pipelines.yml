@@ -29,6 +29,13 @@ stages:
             command: 'validate'
             workingDirectory: 'infra/'
             allowTelemetryCollection: false
+            
+        - task: TerraformCLI@0
+          displayName: terraform apply
+          inputs:
+            command: 'apply'
+            workingDirectory: 'infra/'
+            allowTelemetryCollection: false
 
 - stage: DestroyInfra
   displayName: 'Destroy Infrastructure'
