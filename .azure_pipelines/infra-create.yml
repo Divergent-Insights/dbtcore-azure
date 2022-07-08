@@ -18,31 +18,32 @@ stages:
       steps:
         - script: echo $ARM_TENANT_ID
           
-        - task: TerraformInstaller@0
-          displayName: Installing Terraform
-          inputs:
-            terraformVersion: 'latest'
-        - task: TerraformCLI@0
-          displayName: terraform init
-          inputs:
-            allowTelemetryCollection: false
-            environmentServiceName: 'terraform'
-            command: 'init'
-            workingDirectory: 'infra/'
-            runAzLogin: true
-        - task: TerraformCLI@0
-          displayName: terraform validate
-          inputs:
-            command: 'validate'
-            workingDirectory: 'infra/'
-            allowTelemetryCollection: false
-            
-        - task: TerraformCLI@0
-          displayName: terraform apply
-          inputs:
-            allowTelemetryCollection: false
-            environmentServiceName: 'terraform'
-            command: 'apply'
-            workingDirectory: 'infra/'            
-            runAzLogin: true
-            commandOptions: -input=false -var "SYNAPSE_LOGIN_PASSWORD=$(TF_VAR_SYNAPSE_LOGIN_PASSWORD)" -var "TERRAFORM_SERVICE_PRINCIPAL_SECRET=$(TF_VAR_TERRAFORM_SERVICE_PRINCIPAL_SECRET)"
+#        - task: TerraformInstaller@0
+#          displayName: Installing Terraform
+#          inputs:
+#            terraformVersion: 'latest'
+#        - task: TerraformCLI@0
+#          displayName: terraform init
+#          inputs:
+#            allowTelemetryCollection: false
+#            environmentServiceName: 'terraform'
+#            command: 'init'
+#            workingDirectory: 'infra/'
+#            runAzLogin: true
+#        - task: TerraformCLI@0
+#          displayName: terraform validate
+#          inputs:
+#            command: 'validate'
+#            workingDirectory: 'infra/'
+#            allowTelemetryCollection: false
+#            
+#        - task: TerraformCLI@0
+#          displayName: terraform apply
+#          inputs:
+#            allowTelemetryCollection: false
+#            environmentServiceName: 'terraform'
+#            command: 'apply'
+#            workingDirectory: 'infra/'            
+#            runAzLogin: true
+#            commandOptions: -input=false -var "SYNAPSE_LOGIN_PASSWORD=$(TF_VAR_SYNAPSE_LOGIN_PASSWORD)" -var "TERRAFORM_SERVICE_PRINCIPAL_SECRET=$(TF_VAR_TERRAFORM_SERVICE_PRINCIPAL_SECRET)"
+#
