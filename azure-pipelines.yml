@@ -1,9 +1,5 @@
 name: dbtcore-azure
 
-variables:
-- name: TF_VAR_synapse_login_password
-  value: WeAreDivergent#1 
-
 trigger:
 - main
 
