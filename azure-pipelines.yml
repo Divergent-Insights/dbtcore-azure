@@ -14,14 +14,17 @@ stages:
       displayName: Deploy Infra via Terraform
       steps:      
         - task: TerraformInstaller@0
+          displayName: Installing Terraform
           inputs:
             terraformVersion: 'latest'
         - task: TerraformCLI@0
+          displayName: terraform init
           inputs:
             command: 'init'
             workingDirectory: 'infra/'
             allowTelemetryCollection: false
         - task: TerraformCLI@0
+          displayName: terraform validate
           inputs:
             command: 'validate'
             workingDirectory: 'infra/'
