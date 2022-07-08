@@ -15,7 +15,9 @@ stages:
   jobs:  
     - job: TerraformApply
       displayName: Terraform Apply
-      steps:      
+      steps:
+        - script: echo $ARM_TENANT_ID
+          
         - task: TerraformInstaller@0
           displayName: Installing Terraform
           inputs:
