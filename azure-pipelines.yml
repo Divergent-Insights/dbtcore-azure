@@ -1,0 +1,69 @@
+name: dbtcore-azure
+
+variables:
+- name: TF_VAR_synapse_login_password
+  value: WeAreDivergent#1 
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: CreateInfra
+  displayName: 'Create Infrastructure'
+  jobs:  
+    - job: DeployInfra
+      displayName: Deploy Infra via Terraform
+      steps:      
+        - task: TerraformInstaller@0
+          displayName: Installing Terraform
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformCLI@0
+          displayName: terraform init
+          inputs:
+            command: 'init'
+            workingDirectory: 'infra/'
+            allowTelemetryCollection: false
+        - task: TerraformCLI@0
+          displayName: terraform validate
+          inputs:
+            command: 'validate'
+            workingDirectory: 'infra/'
+            allowTelemetryCollection: false
+            
+        - task: TerraformCLI@0
+          displayName: terraform apply
+          inputs:
+            allowTelemetryCollection: false
+            environmentServiceName: 'terraform'
+            command: 'apply'
+            workingDirectory: 'infra/'            
+            runAzLogin: true
+
+#- stage: DestroyInfra
+#  displayName: 'Destroy Infrastructure'
+#  dependsOn: []
+#  jobs:  
+#    - job: DeployInfra
+#      displayName: Deploy Infra via Terraform
+#      steps:      
+#        - task: TerraformInstaller@0
+#          displayName: Installing Terraform
+#          inputs:
+#            terraformVersion: 'latest'
+#        - task: TerraformCLI@0
+#          displayName: terraform init
+#          inputs:
+#            command: 'init'
+#            workingDirectory: 'infra/'
+#            allowTelemetryCollection: false
+#        - task: TerraformCLI@0
+#          displayName: terraform validate
+#          inputs:
+#            command: 'validate'
+#            workingDirectory: 'infra/'
+#            allowTelemetryCollection: false
+#
