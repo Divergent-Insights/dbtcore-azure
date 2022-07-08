@@ -7,8 +7,8 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: CreateInfra
-  displayName: 'Create Infrastructure'
+- stage: InfraCreate
+  displayName: 'InfrastructureCreate'
   jobs:  
     - job: TerraformApply
       displayName: Terraform Apply
