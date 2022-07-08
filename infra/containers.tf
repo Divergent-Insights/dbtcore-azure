@@ -24,7 +24,7 @@ az acr login --name crdbtcoreazure
 az acr build -t divergent-insights/dbtcore-azure:v1 --registry crdbtcoreazure ../dbtcore_image
     BUILD_CMD_EOF
 
-    interpreter = ["Powershell", "-Command"]
+    #interpreter = ["Powershell", "-Command"]
 
     environment = {
       ACR       = azurerm_container_registry.acr.name
@@ -103,7 +103,7 @@ tar -cvzf ../dbtproject.tar ../dbtproject
 az storage file upload --share-name share --source ../dbtproject.tar --account-name $env:storage_account_name --account-key $env:storage_account_pak
     BUILD_CMD_EOF
 
-    interpreter = ["Powershell", "-Command"]
+    #interpreter = ["Powershell", "-Command"]
 
     environment = {
       storage_share_name   = azurerm_storage_share.dbtcoreazure.name
