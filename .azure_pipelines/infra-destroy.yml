@@ -1,11 +1,11 @@
-name: dbtcore-azure
+name: infra-destroy
 
 pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: DestroyInfra
-  displayName: 'Destroy Infrastructure'
+- stage: InfraDestroy
+  displayName: 'Infrastructure Destroy'
   jobs:  
     - job: TerraformDestroy
       displayName: Terraform Destroy
