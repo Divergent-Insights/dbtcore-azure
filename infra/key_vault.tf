@@ -42,7 +42,7 @@ resource "azurerm_key_vault_secret" "terraform_user" {
 
 resource "azurerm_key_vault_secret" "kvs_acr_sp_scrt" {
   name         = "terraform-user-secret"
-  value        = var.terraform_service_principal_secret
+  value        = var.TERRAFORM_SERVICE_PRINCIPAL_SECRET
   content_type = "Terraform user password"
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]
@@ -62,7 +62,7 @@ resource "azurerm_key_vault_secret" "sql_administrator_login" {
 
 resource "azurerm_key_vault_secret" "sql_administrator_login_password" {
   name         = "synpase-sql-administrator-login-password"
-  value        = var.synapse_login_password
+  value        = var.SYNAPSE_LOGIN_PASSWORD
   content_type = "Synapse Admin Login - Password"
   key_vault_id = azurerm_key_vault.kv.id
   depends_on   = [azurerm_key_vault_access_policy.terraform_user]

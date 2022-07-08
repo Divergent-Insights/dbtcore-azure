@@ -50,7 +50,7 @@ resource "azurerm_container_group" "acg_dbt" {
   image_registry_credential {
     server   = azurerm_container_registry.acr.login_server
     username = data.azurerm_client_config.current.client_id
-    password = var.terraform_service_principal_secret
+    password = var.TERRAFORM_SERVICE_PRINCIPAL_SECRET
   }
 
   container {
