@@ -6,6 +6,9 @@ name: infra-create
 pool:
   vmImage: ubuntu-latest
 
+variables:
+- group: dbtcore-azure
+
 stages:
 - stage: InfraCreate
   displayName: 'InfrastructureCreate'
