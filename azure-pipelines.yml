@@ -1,4 +1,3 @@
-
 name: dbtcore-azure
 
 trigger:
@@ -10,10 +9,11 @@ pool:
 stages:
 - stage: Build
   displayName: 'Run a one-line script'
-  jobs:
+  jobs:  
     - job: DeployInfra
       displayName: Deploy Infra via Terraform
-      steps:
-      - task:
-
-    - script: echo Hello, world!
+      steps:      
+        - script: echo Hello, world!
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: 'latest'
