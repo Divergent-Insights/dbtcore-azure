@@ -6,11 +6,11 @@ variable "stack_name" {
   default     = "dbtcoreazure"
 }
 
-variable "terraform_service_principal_secret" {
+variable "TERRAFORM_SERVICE_PRINCIPAL_SECRET" {  # Uppercase required due to ADO limitations
   description = "Terraform Service Principal secret"
 }
 
-variable "synapse_login_password" {
+variable "SYNAPSE_LOGIN_PASSWORD" {  # Uppercase required due to ADO limitations
   description = "Terraform Service Principal secret"
 }
 
