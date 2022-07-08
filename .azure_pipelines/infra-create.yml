@@ -1,7 +1,7 @@
-name: dbtcore-azure
+name: infra-create
 
-trigger:
-- main
+#trigger:
+#- main
 
 pool:
   vmImage: ubuntu-latest
@@ -10,8 +10,8 @@ stages:
 - stage: CreateInfra
   displayName: 'Create Infrastructure'
   jobs:  
-    - job: DeployInfra
-      displayName: Deploy Infra via Terraform
+    - job: TerraformApply
+      displayName: Terraform Apply
       steps:      
         - task: TerraformInstaller@0
           displayName: Installing Terraform
@@ -39,28 +39,3 @@ stages:
             workingDirectory: 'infra/'            
             runAzLogin: true
             commandOptions: -input=false -var "SYNAPSE_LOGIN_PASSWORD=$(TF_VAR_SYNAPSE_LOGIN_PASSWORD)" -var "TERRAFORM_SERVICE_PRINCIPAL_SECRET=$(TF_VAR_TERRAFORM_SERVICE_PRINCIPAL_SECRET)"
-
-#- stage: DestroyInfra
-#  displayName: 'Destroy Infrastructure'
-#  dependsOn: []
-#  jobs:  
-#    - job: DeployInfra
-#      displayName: Deploy Infra via Terraform
-#      steps:      
-#        - task: TerraformInstaller@0
-#          displayName: Installing Terraform
-#          inputs:
-#            terraformVersion: 'latest'
-#        - task: TerraformCLI@0
-#          displayName: terraform init
-#          inputs:
-#            command: 'init'
-#            workingDirectory: 'infra/'
-#            allowTelemetryCollection: false
-#        - task: TerraformCLI@0
-#          displayName: terraform validate
-#          inputs:
-#            command: 'validate'
-#            workingDirectory: 'infra/'
-#            allowTelemetryCollection: false
-#
