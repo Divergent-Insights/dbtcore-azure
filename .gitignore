@@ -196,3 +196,4 @@ cython_debug/
 /dbtproject/target/
 /dbtproject/packages/
 /dbtproject/logs/
+dbtproject.tar
