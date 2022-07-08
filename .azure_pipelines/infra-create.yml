@@ -23,9 +23,10 @@ stages:
         - task: TerraformCLI@0
           displayName: terraform init
           inputs:
+            allowTelemetryCollection: false
+            environmentServiceName: 'terraform'
             command: 'init'
             workingDirectory: 'infra/'
-            allowTelemetryCollection: false
         - task: TerraformCLI@0
           displayName: terraform validate
           inputs:
