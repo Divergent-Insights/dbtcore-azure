@@ -29,6 +29,7 @@ stages:
             environmentServiceName: 'terraform'
             command: 'init'
             workingDirectory: 'infra/'
+            runAzLogin: true
         - task: TerraformCLI@0
           displayName: terraform validate
           inputs:
