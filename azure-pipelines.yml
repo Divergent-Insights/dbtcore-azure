@@ -39,6 +39,7 @@ stages:
 
 - stage: DestroyInfra
   displayName: 'Destroy Infrastructure'
+  dependsOn: []
   jobs:  
     - job: DeployInfra
       displayName: Deploy Infra via Terraform
