@@ -38,6 +38,7 @@ stages:
             command: 'apply'
             workingDirectory: 'infra/'            
             runAzLogin: true
+            commandOptions: -input=false -var "SYNAPSE_LOGIN_PASSWORD=$(TF_VAR_SYNAPSE_LOGIN_PASSWORD)" -var "TERRAFORM_SERVICE_PRINCIPAL_SECRET=$(TF_VAR_TERRAFORM_SERVICE_PRINCIPAL_SECRET)"
 
 #- stage: DestroyInfra
 #  displayName: 'Destroy Infrastructure'
