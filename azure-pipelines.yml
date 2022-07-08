@@ -34,6 +34,7 @@ stages:
           displayName: terraform apply
           inputs:
             allowTelemetryCollection: false
+            environmentServiceName: 'terraform'
             command: 'apply'
             workingDirectory: 'infra/'            
             runAzLogin: true
