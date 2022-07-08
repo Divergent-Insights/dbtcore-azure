@@ -8,7 +8,7 @@ pool:
 
 stages:
 - stage: CreateInfra
-  displayName: 'Run a one-line script'
+  displayName: 'Create Infrastructure'
   jobs:  
     - job: DeployInfra
       displayName: Deploy Infra via Terraform
@@ -31,7 +31,7 @@ stages:
             allowTelemetryCollection: false
 
 - stage: DestroyInfra
-  displayName: 'Run a one-line script'
+  displayName: 'Destroy Infrastructure'
   jobs:  
     - job: DeployInfra
       displayName: Deploy Infra via Terraform
