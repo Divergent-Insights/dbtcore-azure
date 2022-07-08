@@ -1,0 +1,19 @@
+
+name: dbtcore-azure
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: Build
+  displayName: 'Run a one-line script'
+  jobs:
+    - job: DeployInfra
+      displayName: Deploy Infra via Terraform
+      steps:
+      - task:
+
+    - script: echo Hello, world!
