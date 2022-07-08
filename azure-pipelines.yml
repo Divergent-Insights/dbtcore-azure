@@ -18,7 +18,7 @@ stages:
             terraformVersion: 'latest'
         - task: TerraformCLI@0
           inputs:
-            command: 'validate'
+            command: 'init'
             workingDirectory: 'infra/'
             allowTelemetryCollection: false
           
