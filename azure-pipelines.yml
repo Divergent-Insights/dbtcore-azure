@@ -7,7 +7,7 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: Create Infra
+- stage: CreateInfra
   displayName: 'Run a one-line script'
   jobs:  
     - job: DeployInfra
@@ -30,7 +30,7 @@ stages:
             workingDirectory: 'infra/'
             allowTelemetryCollection: false
 
-- stage: Destroy Infra
+- stage: DestroyInfra
   displayName: 'Run a one-line script'
   jobs:  
     - job: DeployInfra
