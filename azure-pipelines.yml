@@ -13,7 +13,12 @@ stages:
     - job: DeployInfra
       displayName: Deploy Infra via Terraform
       steps:      
-        - script: echo Hello, world!
         - task: TerraformInstaller@0
           inputs:
             terraformVersion: 'latest'
+        - task: TerraformCLI@0
+          inputs:
+            command: 'validate'
+            workingDirectory: 'infra/'
+            allowTelemetryCollection: false
+          
