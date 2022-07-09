@@ -37,14 +37,14 @@ stages:
             ensureBackend: true
             backendAzureRmResourceGroupName: 'tfstate'
             # azure location shortname of the backend resource group and storage account
-            backendAzureRmResourceGroupLocation: 'australiaeast'
-            backendAzureRmStorageAccountName: 'divergent-insights-tfstate'
+            backendAzureRmResourceGroupLocation: 'eastus'
+            backendAzureRmStorageAccountName: 'tfstate3772'
             # azure storage account sku, used when creating the storage account
             backendAzureRmStorageAccountSku: 'Standard_RAGRS'
             # azure blob container to store the state file
-            backendAzureRmContainerName: 'tfstate-dbtcore-azure'
+            backendAzureRmContainerName: 'tfstate'
             # azure blob file name
-            backendAzureRmKey: infrax.tfstate
+            backendAzureRmKey: terraform.tfstate
 #        - task: TerraformCLI@0
 #          displayName: terraform validate
 #          inputs:
