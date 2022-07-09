@@ -23,11 +23,15 @@ stages:
           pip install -q --no-cache-dir dbt-core
           pip install -q --no-cache-dir dbt-snowflake --no-use-pep517
           pip install -q --no-cache-dir dbt-synapse
+        displayName: Installing pip and dbt
       - script: |
           cp dbtcore_image/profiles.yml dbtproject
+          displayName: Setting up dbt profiles.yml
       - script: |
           cd dbtproject/
           ls -l
-          dbt degug
+          dbt debug
           dbt deps
           dbt run
+          displayName: Running dbt
+
