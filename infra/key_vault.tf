@@ -8,33 +8,49 @@ resource "azurerm_key_vault" "kv" {
   location            = azurerm_resource_group.rg.location
   sku_name            = "standard"
   tenant_id           = data.azurerm_client_config.current.tenant_id
-  tags                = var.custom_tags
+
+  access_policy = [
+    # Terraform user access
+    {
+      tenant_id = data.azurerm_client_config.current.tenant_id
+      object_id = data.azurerm_client_config.current.object_id
+      secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
+    },
+    # Azure Data Factory access
+    {
+      tenant_id = data.azurerm_client_config.current.tenant_id
+      object_id = azurerm_data_factory.dbtcore_execution.identity[0].principal_id
+      secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
+    }
+  ]
+
+  tags = var.custom_tags
 }
 
-# Ensure the Terraform user has write access to Key Vault
-resource "azurerm_key_vault_access_policy" "terraform_user" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
-
-  secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "azurerm_key_vault_access_policy" "adf" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = azurerm_data_factory.dbtcore_execution.identity[0].principal_id
-
-  secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
+## Ensure the Terraform user has write access to Key Vault
+#resource "azurerm_key_vault_access_policy" "terraform_user" {
+#  key_vault_id = azurerm_key_vault.kv.id
+#  tenant_id    = data.azurerm_client_config.current.tenant_id
+#  object_id    = data.azurerm_client_config.current.object_id
+#
+#  secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
+#
+#  lifecycle {
+#    create_before_destroy = true
+#  }
+#}
+#
+#resource "azurerm_key_vault_access_policy" "adf" {
+#  key_vault_id = azurerm_key_vault.kv.id
+#  tenant_id    = data.azurerm_client_config.current.tenant_id
+#  object_id    = azurerm_data_factory.dbtcore_execution.identity[0].principal_id
+#
+#  secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
+#
+#  lifecycle {
+#    create_before_destroy = true
+#  }
+#}
 
 # Terraform user credentials
 # This is required by Azure Data Factory to fetch the credentials

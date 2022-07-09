@@ -7,6 +7,11 @@ resource "azurerm_storage_account" "dbtcoreazure" {
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  static_website {
+    index_document = "index.html"
+  }
+
   tags                     = var.custom_tags
 }
 
