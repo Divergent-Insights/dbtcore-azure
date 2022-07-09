@@ -14,13 +14,13 @@ resource "azurerm_data_factory" "dbtcore_execution" {
 }
 
 # ADF Permissions: Key Vault Access Policy
-resource "azurerm_key_vault_access_policy" "kv_adf_transform" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = azurerm_data_factory.dbtcore_execution.identity[0].principal_id
-
-  secret_permissions = ["Get", "List"]
-}
+#resource "azurerm_key_vault_access_policy" "kv_adf_transform" {
+#  key_vault_id = azurerm_key_vault.kv.id
+#  tenant_id    = data.azurerm_client_config.current.tenant_id
+#  object_id    = azurerm_data_factory.dbtcore_execution.identity[0].principal_id
+#
+#  secret_permissions = ["Get", "List"]
+#}
 
 resource "azurerm_data_factory_pipeline" "dbt_execution" {
   name            = "dbt Execution"
