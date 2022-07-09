@@ -26,12 +26,12 @@ stages:
         displayName: Installing pip and dbt
       - script: |
           cp dbtcore_image/profiles.yml dbtproject
-          displayName: Setting up dbt profiles.yml
+        displayName: Setting up dbt profiles.yml
       - script: |
           cd dbtproject/
           ls -l
           dbt debug
           dbt deps
           dbt run
-          displayName: Running dbt
+        displayName: Running dbt
 
