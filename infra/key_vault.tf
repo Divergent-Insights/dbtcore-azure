@@ -9,29 +9,6 @@ resource "azurerm_key_vault" "kv" {
   sku_name            = "standard"
   tenant_id           = data.azurerm_client_config.current.tenant_id
 
-  #access_policy = [
-  #  # Terraform user access
-  #  {
-  #    tenant_id = data.azurerm_client_config.current.tenant_id
-  #    object_id = data.azurerm_client_config.current.object_id
-  #    application_id = ""
-  #    key_permissions = []
-  #    secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
-  #    certificate_permissions = []
-  #    storage_permissions = []
-  #  },
-  #  # Azure Data Factory access
-  #  {
-  #    tenant_id = data.azurerm_client_config.current.tenant_id
-  #    object_id = azurerm_data_factory.dbtcore_execution.identity[0].principal_id
-  #    application_id = ""
-  #    key_permissions = []
-  #    secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
-  #    certificate_permissions = []
-  #    storage_permissions = []
-  #  }
-  #]
-
   tags = var.custom_tags
 }
 
@@ -42,10 +19,6 @@ resource "azurerm_key_vault_access_policy" "terraform_user" {
   object_id    = data.azurerm_client_config.current.object_id
 
   secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 # Ensure Azure Data Factory has relevant access to Key Vault
@@ -55,10 +28,6 @@ resource "azurerm_key_vault_access_policy" "adf" {
   object_id    = azurerm_data_factory.dbtcore_execution.identity[0].principal_id
 
   secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 # Terraform user credentials
@@ -69,7 +38,7 @@ resource "azurerm_key_vault_secret" "terraform_user" {
   value        = data.azurerm_client_config.current.client_id
   content_type = "Terraform user name"
   key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault.kv]
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
   tags         = var.custom_tags
 }
 
@@ -78,7 +47,7 @@ resource "azurerm_key_vault_secret" "kvs_acr_sp_scrt" {
   value        = var.TERRAFORM_SERVICE_PRINCIPAL_SECRET
   content_type = "Terraform user password"
   key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault.kv]
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
   tags         = var.custom_tags
 }
 
@@ -89,7 +58,7 @@ resource "azurerm_key_vault_secret" "sql_administrator_login" {
   value        = "sqladmin"
   content_type = "Synapse Admin Login - User"
   key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault.kv]
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
   tags         = var.custom_tags
 }
 
@@ -98,6 +67,6 @@ resource "azurerm_key_vault_secret" "sql_administrator_login_password" {
   value        = var.SYNAPSE_LOGIN_PASSWORD
   content_type = "Synapse Admin Login - Password"
   key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault.kv]
+  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
   tags         = var.custom_tags
 }
