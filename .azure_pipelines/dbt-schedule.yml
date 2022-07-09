@@ -8,6 +8,9 @@ schedules:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+- group: dbtcore-azure
+
 stages:
 - stage: dbtDeploy
   displayName: dbt Deploy
