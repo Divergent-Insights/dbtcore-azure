@@ -18,7 +18,6 @@ resource "azurerm_key_vault_access_policy" "terraform_user" {
   object_id    = data.azurerm_client_config.current.object_id
 
   secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
-  depends_on   = [azurerm_key_vault.kv]
 }
 
 resource "azurerm_key_vault_access_policy" "adf" {
@@ -27,7 +26,6 @@ resource "azurerm_key_vault_access_policy" "adf" {
   object_id    = azurerm_data_factory.dbtcore_execution.identity[0].principal_id
 
   secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
-  depends_on   = [azurerm_key_vault.kv]
 }
 
 # Terraform user credentials
