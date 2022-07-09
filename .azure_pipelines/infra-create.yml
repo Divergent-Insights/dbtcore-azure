@@ -27,6 +27,7 @@ stages:
           inputs:
             allowTelemetryCollection: false
             command: init
+            workingDirectory: 'infra/'
             backendType: azurerm
             # Service connection to authorize backend access. Supports Subscription & Management Group Scope
             backendServiceArm: 'terraform'
@@ -48,16 +49,16 @@ stages:
         - task: TerraformCLI@0
           displayName: terraform validate
           inputs:
+            allowTelemetryCollection: false
             command: 'validate'
             workingDirectory: 'infra/'
-            allowTelemetryCollection: false
             
         - task: TerraformCLI@0
           displayName: terraform apply
           inputs:
             allowTelemetryCollection: false
-            environmentServiceName: 'terraform'
             command: 'apply'
-            workingDirectory: 'infra/'            
+            workingDirectory: 'infra/'
+            environmentServiceName: 'terraform'
             runAzLogin: true
             commandOptions: -input=false -var "SYNAPSE_LOGIN_PASSWORD=$(TF_VAR_SYNAPSE_LOGIN_PASSWORD)" -var "TERRAFORM_SERVICE_PRINCIPAL_SECRET=$(TF_VAR_TERRAFORM_SERVICE_PRINCIPAL_SECRET)"
