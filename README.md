@@ -1,31 +1,53 @@
 # dbt on Azure
 
-This project is an enterprise-ready end-to-end implementation of dbt on Azure
+## Overview
 
-## Terraform
-# Hello world example: https://learn.hashicorp.com/tutorials/terraform/azure-build?in=terraform/azure-get-started
-# Naming convention: https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming
+This project is an enterprise-ready, scalable and robust end-to-end implementation of dbt on Azure:
 
-## Azure CLI Installation
-In a PowerShell Administrator console run
-$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
+- This solution is fully based on Microsoft Azure
+- All infrastructured is deployed programmatically (via Terraform)
+- Code automataion (CI/CD) is realized with Azure DevOps Pipelines (ADO Pipelines)
+- dbt runs are scheduled via either ADO or Azure Container Instance (ACI)
+- dbt database backed is Microsoft Synapse with Dedicated Pools
 
-# Obtain your Azure subscription id
-az login
+## Use Cases
 
-# Set your subscription
-az account set --subscription "my-subscription-id"
+Consider this solution for:
+- Using dbt as a transformation tool in medium and large organizations that are strategically alinged to Microsoft products
+- Organization that want to get up and running with dbt on Azure and have limited capacity or expertise setting up these new tools
+- Organizations that value DevOps practices such as version control, code review, continuous integration and continouous deployment
 
-# Create a Service Principal
-az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/my-subscription-id"
-az ad sp create-for-rbac --role="Owner" --scopes="/subscriptions/my-subscription-id"
-az ad sp create-for-rbac --role="Owner" --scopes="/subscriptions/9feb9ec3-d1be-4df4-8af9-b7a8da1e3de6"
-az ad sp create-for-rbac --role="Owner" --scopes="/subscriptions/9feb9ec3-d1be-4df4-8af9-b7a8da1e3de6" --name terraform
-az ad sp create-for-rbac --role="Contributor" --scopes="/subscriptions/9feb9ec3-d1be-4df4-8af9-b7a8da1e3de6" --name terraform
+## Architecture
 
+## Dataflow
 
-## Environment Variables
-$Env:ARM_CLIENT_ID = "<APPID_VALUE>"
-$Env:ARM_CLIENT_SECRET = "<PASSWORD_VALUE>"
-$Env:ARM_SUBSCRIPTION_ID = "<SUBSCRIPTION_ID>"
-$Env:ARM_TENANT_ID = "<TENANT_VALUE>"
+## Key Components
+
+- *One*
+- *Two*
+- *Three*
+- *Four*
+
+## Alternatives
+
+## Considerations
+
+### Security
+
+- One
+- Two
+
+### Costs
+
+- One
+- Two
+
+## Deploying this solution
+
+### Prerequisites
+
+### Walk-through
+
+## Copyright
+
+© 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
