@@ -4,6 +4,9 @@ schedules:
 - cron: "*/5 * * * *"
 #- cron: "0 6 * * *"
   displayName: Every day at 6:00AM (WST)
+  branches:
+    include:
+    - main
   always: true
 
 pool:
