@@ -18,12 +18,12 @@ resource "null_resource" "build_dbtcore_image" {
   }
 
   provisioner "local-exec" {
-    command = "az acr login --name $ACR_NAME && az acr build -t $IMAGE_TAG --registry $ACR_NAME ../dbtcore_image"
+    command = "az acr login --name crdbtcoreazure && az acr build -t divergent-insights/dbtcore-azure:v1 --registry crdbtcoreazure ../dbtcore_image"
 
     #interpreter = ["Powershell", "-Command"]
 
     environment = {
-      ACR_NAME  = azurerm_container_registry.acr.name
+      ACR       = azurerm_container_registry.acr.name
       IMAGE_TAG = var.dbtcore_image_tag
     }
   }
@@ -93,7 +93,7 @@ resource "null_resource" "dbt_project_tar" {
   }
 
   provisioner "local-exec" {
-    command = "cd .. && tar -cvzf dbtproject.tar dbtproject && az storage file upload --share-name $STORAGE_SHARE_NAME --source dbtproject.tar --account-name $STORAGE_ACCOUNT_NAME --account-key $STORAGE_ACCOUNT_PAK"
+    command = "cd .. && tar -cvzf dbtproject.tar dbtproject && az storage file upload --share-name share --source ../dbtproject.tar --account-name $STORAGE_ACCOUNT_NAME --account-key $STORAGE_ACCOUNT_PAK"
 
     #interpreter = ["Powershell", "-Command"]
 
