@@ -26,11 +26,25 @@ stages:
           displayName: terraform init
           inputs:
             allowTelemetryCollection: false
-            environmentServiceName: 'terraform'
-            command: 'init'
-            workingDirectory: 'infra/'
-            runAzLogin: true
-            commandOptions: -input=false -var "ARM_CLIENT_ID=$(ARM_CLIENT_ID)" -var "ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)" -var "ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)" -var "ARM_TENANT_ID=$(ARM_TENANT_ID)"
+            command: init
+            backendType: azurerm
+            # Service connection to authorize backend access. Supports Subscription & Management Group Scope
+            backendServiceArm: 'terraform'
+            # Subscription id of the target backend. This can be used to specify the subscription when using Management Group scoped
+            # Service connection or to override the subscription id defined in a Subscription scoped service connection
+            #backendAzureRmSubscriptionId: 'my-backend-subscription-id'
+            # create backend storage account if doesn't exist
+            ensureBackend: true
+            backendAzureRmResourceGroupName: 'tfstate'
+            # azure location shortname of the backend resource group and storage account
+            backendAzureRmResourceGroupLocation: 'australiaeast'
+            backendAzureRmStorageAccountName: 'divergent-insights-tfstate'
+            # azure storage account sku, used when creating the storage account
+            backendAzureRmStorageAccountSku: 'Standard_RAGRS'
+            # azure blob container to store the state file
+            backendAzureRmContainerName: 'tfstate-dbtcore-azure'
+            # azure blob file name
+            backendAzureRmKey: infrax.tfstate
 #        - task: TerraformCLI@0
 #          displayName: terraform validate
 #          inputs:
