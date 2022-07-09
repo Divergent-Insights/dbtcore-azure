@@ -8,10 +8,6 @@ pool:
 
 variables:
 - group: dbtcore-azure
-- name: DBT_SYNAPSE_USER
-  value: $(DBT_SYNAPSE_USER_G)
-- name: DBT_SYNAPSE_PASSWORD
-  value: $(DBT_SYNAPSE_PASSWORD_G)
 
 stages:
 - stage: dbtDeploy
@@ -39,6 +35,7 @@ stages:
           cd dbtproject/
           ls -l
           export DBT_SYNAPSE_USER=$(DBT_SYNAPSE_USER_G)
+          export DBT_SYNAPSE_PASSWORD=$(DBT_SYNAPSE_PASSWORD_G)
           dbt debug
           dbt deps
           dbt run
