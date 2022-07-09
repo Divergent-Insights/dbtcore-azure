@@ -40,5 +40,5 @@ variable "custom_tags" {
 }
 
 variable "dbtcore_image_tag" {
-  default = "divergent-insights/dbtcore-azure"
+  default = "divergent-insights/dbtcore-azure:v1"
 }
