@@ -13,17 +13,17 @@ resource "azurerm_container_registry" "acr" {
 # Creating Docker image manually
 resource "null_resource" "build_dbtcore_image" {
 
-  triggers = {
-    always_run = "${timestamp()}"
-  }
+  #triggers = {
+  #  always_run = "${timestamp()}"
+  #}
 
   provisioner "local-exec" {
-    command = "az acr login --name crdbtcoreazure && az acr build -t divergent-insights/dbtcore-azure:v1 --registry crdbtcoreazure ../dbtcore_image"
+    command = "az acr login --name $ACR_NAME && az acr build -t $IMAGE_TAG --registry $ACR_NAME ../dbtcore_image"
 
     #interpreter = ["Powershell", "-Command"]
 
     environment = {
-      ACR       = azurerm_container_registry.acr.name
+      ACR_NAME  = azurerm_container_registry.acr.name
       IMAGE_TAG = var.dbtcore_image_tag
     }
   }
@@ -51,7 +51,7 @@ resource "azurerm_container_group" "acg_dbt" {
 
   container {
     name   = "dbtcoreazure"
-    image  = "${azurerm_container_registry.acr.login_server}/${var.dbtcore_image_tag}:v1"
+    image  = "${azurerm_container_registry.acr.login_server}/${var.dbtcore_image_tag}"
     cpu    = 1
     memory = 1
     environment_variables = {
