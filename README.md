@@ -1,4 +1,6 @@
-# Development Setup (All Microsoft and Windows)
+# dbt on Azure
+
+This project is an enterprise-ready end-to-end implementation of dbt on Azure
 
 ## Terraform
 # Hello world example: https://learn.hashicorp.com/tutorials/terraform/azure-build?in=terraform/azure-get-started

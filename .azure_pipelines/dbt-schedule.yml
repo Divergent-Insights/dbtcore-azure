@@ -1,7 +1,8 @@
 name: dbt-schedule
 
 schedules:
-- cron: "0 6 * * *"
+- cron: "*/5 * * * *"
+#- cron: "0 6 * * *"
   displayName: Every day at 6:00AM (WST)
   always: true
 
@@ -15,16 +16,30 @@ stages:
 - stage: dbtDeploy
   displayName: dbt Deploy
   jobs:
-  - job: dbtRun
-    displayName: dbt Run
+  - job: dbtSchedule
+    displayName: dbt Schedule
     steps:
-      - task: UserPythonVersion@0
+      - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.7'
+          addToPath: true
+          architecture: 'x64'
       - script: |
           pip install -q --upgrade pip setuptools wheel
           pip install -q --no-cache-dir dbt-core
           pip install -q --no-cache-dir dbt-snowflake --no-use-pep517
           pip install -q --no-cache-dir dbt-synapse
-      - script: dbt deps
-      - script: dbt run
+        displayName: Installing pip and dbt
+      - script: |
+          mkdir $HOME/.dbt
+          cp dbtcore_image/profiles.yml $HOME/.dbt
+        displayName: Setting up dbt profiles.yml
+      - script: |
+          cd dbtproject/
+          ls -l
+          export DBT_SYNAPSE_USER=$(DBT_SYNAPSE_USER_G)
+          export DBT_SYNAPSE_PASSWORD=$(DBT_SYNAPSE_PASSWORD_G)
+          dbt debug
+          dbt deps
+          dbt run
+        displayName: Running dbt
