@@ -8,8 +8,10 @@ pool:
 
 variables:
 - group: dbtcore-azure
-- DBT_SYNAPSE_USER: $DBT_SYNAPSE_USER
-- DBT_SYNAPSE_PASSWORD: $DBT_SYNAPSE_PASSWORD
+- name: DBT_SYNAPSE_USER
+  value: $(DBT_SYNAPSE_USER)
+- name: DBT_SYNAPSE_PASSWORD
+  value: $(DBT_SYNAPSE_PASSWORD)
 
 stages:
 - stage: dbtDeploy
