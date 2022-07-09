@@ -17,7 +17,7 @@ stages:
         inputs:
           versionSpec: '3.7'
           addToPath: true
-          architecture: 'x64'          
+          architecture: 'x64'
       - script: |
           pip install -q --upgrade pip setuptools wheel
           pip install -q --no-cache-dir dbt-core
@@ -25,8 +25,8 @@ stages:
           pip install -q --no-cache-dir dbt-synapse
       - script: |
           cp dbtcore_image/profiles.yml dbtproject
-          cd dbtproject/
       - script: |
+          cd dbtproject/
           ls -l
           dbt degug
           dbt deps
