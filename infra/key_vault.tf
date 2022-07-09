@@ -14,13 +14,21 @@ resource "azurerm_key_vault" "kv" {
     {
       tenant_id = data.azurerm_client_config.current.tenant_id
       object_id = data.azurerm_client_config.current.object_id
+      application_id = ""
+      key_permissions = []
       secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
+      certificate_permissions = []
+      storage_permissions = []
     },
     # Azure Data Factory access
     {
       tenant_id = data.azurerm_client_config.current.tenant_id
       object_id = azurerm_data_factory.dbtcore_execution.identity[0].principal_id
+      application_id = ""
+      key_permissions = []
       secret_permissions = ["Get", "List", "Set", "Delete", "Purge"]
+      certificate_permissions = []
+      storage_permissions = []
     }
   ]
 
@@ -60,7 +68,7 @@ resource "azurerm_key_vault_secret" "terraform_user" {
   value        = data.azurerm_client_config.current.client_id
   content_type = "Terraform user name"
   key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  depends_on   = [azurerm_key_vault.kv]
   tags         = var.custom_tags
 }
 
@@ -69,7 +77,7 @@ resource "azurerm_key_vault_secret" "kvs_acr_sp_scrt" {
   value        = var.TERRAFORM_SERVICE_PRINCIPAL_SECRET
   content_type = "Terraform user password"
   key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  depends_on   = [azurerm_key_vault.kv]
   tags         = var.custom_tags
 }
 
@@ -80,7 +88,7 @@ resource "azurerm_key_vault_secret" "sql_administrator_login" {
   value        = "sqladmin"
   content_type = "Synapse Admin Login - User"
   key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  depends_on   = [azurerm_key_vault.kv]
   tags         = var.custom_tags
 }
 
@@ -89,6 +97,6 @@ resource "azurerm_key_vault_secret" "sql_administrator_login_password" {
   value        = var.SYNAPSE_LOGIN_PASSWORD
   content_type = "Synapse Admin Login - Password"
   key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault_access_policy.terraform_user]
+  depends_on   = [azurerm_key_vault.kv]
   tags         = var.custom_tags
 }
