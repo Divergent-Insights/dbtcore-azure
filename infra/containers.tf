@@ -93,7 +93,7 @@ resource "null_resource" "dbt_project_tar" {
   }
 
   provisioner "local-exec" {
-    command = "cd .. && tar -cvzf dbtproject.tar dbtproject && az storage file upload --share-name share --source ../dbtproject.tar --account-name $STORAGE_ACCOUNT_NAME --account-key $STORAGE_ACCOUNT_PAK"
+    command = "cd .. && tar -cvzf dbtproject.tar dbtproject && az storage file upload --share-name share --source dbtproject.tar --account-name $STORAGE_ACCOUNT_NAME --account-key $STORAGE_ACCOUNT_PAK"
 
     #interpreter = ["Powershell", "-Command"]
 
