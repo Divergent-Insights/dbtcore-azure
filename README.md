@@ -2,23 +2,28 @@
 
 ## Overview
 
-This project is an enterprise-ready, scalable and robust end-to-end implementation of dbt on Azure:
+This project provides an end-to-end, enterprise-ready, scalable and robust implementation of dbt on Azure
 
-- This solution is fully based on Microsoft Azure
-- This is a monorepository solution: infranstructure (Terraform) and data transformation changes (dbt) are orchestrated in one repository
-- All infrastructured is deployed programmatically (via Terraform)
-- Code automataion (CI/CD) is realized with Azure DevOps Pipelines (ADO Pipelines)
-- dbt runs are scheduled via either ADO or Azure Container Instance (ACI)
+The solution realized by this project is characterized by the following:
+
+- Fully based on Microsoft Azure
+- Fully automated. The solution follows the paradigm of "Everything as Code" where all code is validated and delivered automatically via CI/CD
+- Uses a [monorepo](https://en.wikipedia.org/wiki/Monorepo#:~:text=In%20version%20control%20systems%2C%20a,stored%20in%20the%20same%20repository.) where infranstructure (Terraform) code and data transformation code (dbt) are elegantly defined and deployed from one repository
+- dbt runs are scheduled via either Azure DevOps Pipelines (ADO) or Azure Container Instance (ACI)
 - dbt database backed is Microsoft Synapse with Dedicated Pools
+- Code automataion (CI/CD) is realized with Azure DevOps Pipelines (ADO Pipelines)
+- All infrastructured is deployed programmatically (via Terraform)
 
 ## Use Cases
 
 Consider this solution for:
 - Using dbt as a transformation tool in medium and large organizations that are strategically alinged to Microsoft products
-- Organization that want to get up and running with dbt on Azure and have limited capacity or expertise setting up these new tools
-- Organizations that value DevOps practices such as version control, code review, continuous integration and continouous deployment
+- Organizations with limited capacity or expertise using dbt on Azure and want to levarage existing blueprints with embeded best practices to get up and running with dbt on Azure in no time
+- Organizations that value solutions that follow end-to-end DevOps practices such as version control, code review, continuous integration and continouous deployment
 
 ## Architecture
+
+![dbt on Azure High Level Architecture Diagram](dbt-on-azure.png)
 
 ## Workflow
 
@@ -80,6 +85,11 @@ adadfadfadfadfad
 ### Prerequisites
 
 ### Walk-through
+
+## Additional Enhancements
+
+- Sending all logs to centralized logging repository such as Azure Monitor (simple)
+- Dynamic extraction of Azure Key Vault values from all automation scripts
 
 ## Copyright
 

@@ -1,0 +1,63 @@
+name: dbt-create
+
+#trigger:
+#- main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: dbtcore-azure
+
+stages:
+- stage: dbtDeploy
+  displayName: dbt Deploy
+  jobs:
+  - job: dbtRun
+    displayName: dbt Run
+    steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: '3.7'
+          addToPath: true
+          architecture: 'x64'
+      - script: |
+          pip install -q --upgrade pip setuptools wheel
+          pip install -q --no-cache-dir dbt-core
+          pip install -q --no-cache-dir dbt-snowflake --no-use-pep517
+          pip install -q --no-cache-dir dbt-synapse
+        displayName: Installing pip and dbt
+      - script: |
+          mkdir $HOME/.dbt
+          cp dbtcore_image/profiles.yml $HOME/.dbt
+        displayName: Setting up dbt profiles.yml
+      - script: |
+          cd dbtproject/
+          ls -l
+          export DBT_SYNAPSE_USER=$(DBT_SYNAPSE_USER_G)
+          export DBT_SYNAPSE_PASSWORD=$(DBT_SYNAPSE_PASSWORD_G)
+          dbt debug
+          dbt deps
+          dbt docs generate --target nonprod
+        displayName: Running dbt docs
+      - script: |
+# The files index.html, logo.png and style.css have been manually customise
+#          aws s3 cp data/docs/index.html s3://my-bucket
+#          aws s3 cp data/docs/logo.png s3://my-bucket
+#          aws s3 cp data/docs/style.css s3://my-bucket
+
+# The files catalog.json and manifest.json are updated by dbt docs
+          #aws s3 cp data/target/catalog.json s3://my-bucket
+          #aws s3 cp data/target/manifest.json s3://my-bucket
+          $DBTDOCS_WEB_CONTAINER = $(az keyvault secret show --name "dbtdocs-web-container" --vault-name "kvdbtcoreazure" --query "value")
+          echo $DBTDOCS_WEB_CONTAINER
+
+# The files catalog.json and manifest.json are
+          #STACK_CONFIG_CONTENT="$(aws secretsmanager get-secret-value --secret-id my_stack_config --query SecretString --output text)
+          #BUCKET_URL="$(jq -r --arg v "bucket_url" '.[$v]' <<< "${STACK_CONFIG_CONTENT}")"
+          #BUCKET_KMS_KEY="$(jq -r --arg v "bucket_kms_key_id" '.[$v]' <<< "${STACK_CONFIG_CONTENT}")"
+
+          #aws se cp data/target/catalog.json ${BUCKET_URL}catalog/ --sse aws:kms --sse-kms-key-id $BUCKET_KMS_KEY
+          #aws se cp data/target/catalog.json ${BUCKET_URL}manifest/ --sse aws:kms --sse-kms-key-id $BUCKET_KMS_KEY
+
+

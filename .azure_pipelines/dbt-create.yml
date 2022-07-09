@@ -40,4 +40,3 @@ stages:
           dbt deps
           dbt run
         displayName: Running dbt
-
