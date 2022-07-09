@@ -93,14 +93,14 @@ resource "null_resource" "dbt_project_tar" {
   }
 
   provisioner "local-exec" {
-    command = "tar -cvzf ../dbtproject.tar ../dbtproject && az storage file upload --share-name share --source ../dbtproject.tar --account-name $env:storage_account_name --account-key $env:storage_account_pak"
+    command = "cd .. && tar -cvzf dbtproject.tar dbtproject && az storage file upload --share-name share --source ../dbtproject.tar --account-name $STORAGE_ACCOUNT_NAME --account-key $STORAGE_ACCOUNT_PAK"
 
     #interpreter = ["Powershell", "-Command"]
 
     environment = {
-      storage_share_name   = azurerm_storage_share.dbtcoreazure.name
-      storage_account_name = azurerm_storage_account.dbtcoreazure.name
-      storage_account_pak  = azurerm_storage_account.dbtcoreazure.primary_access_key
+      STORAGE_SHARE_NAME   = azurerm_storage_share.dbtcoreazure.name
+      STORAGE_ACCOUNT_NAME = azurerm_storage_account.dbtcoreazure.name
+      STORAGE_ACCOUNT_PAK  = azurerm_storage_account.dbtcoreazure.primary_access_key
     }
   }
 }
