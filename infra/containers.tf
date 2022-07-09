@@ -13,12 +13,12 @@ resource "azurerm_container_registry" "acr" {
 # Creating Docker image manually
 resource "null_resource" "build_dbtcore_image" {
 
-  #triggers = {
-  #  always_run = "${timestamp()}"
-  #}
+  triggers = {
+    always_run = "${timestamp()}"
+  }
 
   provisioner "local-exec" {
-    command = "az acr login --name crdbtcoreazure && az acr build -t $IMAGE_TAG --registry $ACR_NAME ../dbtcore_image"
+    command = "az acr login --name $ACR_NAME && az acr build -t $IMAGE_TAG --registry $ACR_NAME ../dbtcore_image"
 
     #interpreter = ["Powershell", "-Command"]
 
