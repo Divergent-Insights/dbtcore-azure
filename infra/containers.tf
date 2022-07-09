@@ -18,11 +18,7 @@ resource "null_resource" "build_dbtcore_image" {
   }
 
   provisioner "local-exec" {
-    command = <<BUILD_CMD_EOF
-az acr login --name crdbtcoreazure
-
-az acr build -t divergent-insights/dbtcore-azure:v1 --registry crdbtcoreazure.azurecr.io ../dbtcore_image
-    BUILD_CMD_EOF
+    command = "az acr login --name crdbtcoreazure && az acr build -t divergent-insights/dbtcore-azure:v1 --registry crdbtcoreazure ../dbtcore_image"
 
     #interpreter = ["Powershell", "-Command"]
 
@@ -97,11 +93,7 @@ resource "null_resource" "dbt_project_tar" {
   }
 
   provisioner "local-exec" {
-    command = <<BUILD_CMD_EOF
-tar -cvzf ../dbtproject.tar ../dbtproject
-
-az storage file upload --share-name share --source ../dbtproject.tar --account-name $env:storage_account_name --account-key $env:storage_account_pak
-    BUILD_CMD_EOF
+    command = "tar -cvzf ../dbtproject.tar ../dbtproject && az storage file upload --share-name share --source ../dbtproject.tar --account-name $env:storage_account_name --account-key $env:storage_account_pak"
 
     #interpreter = ["Powershell", "-Command"]
 
