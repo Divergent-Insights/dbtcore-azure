@@ -1,7 +1,4 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+name: dbt-create
 
 #trigger:
 #- main
@@ -9,11 +6,20 @@
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+stages:
+- stage: dbtDeploy
+  displayName: dbt Deploy
+  jobs:
+  - job: dbtRun
+    displayName: dbt Run
+    steps:
+      - task: UserPythonVersion@0
+        inputs:
+          versionSpec: '3.7'
+      - script: |
+          pip install -q --upgrade pip setuptools wheel
+          pip install -q --no-cache-dir dbt-core
+          pip install -q --no-cache-dir dbt-snowflake --no-use-pep517
+          pip install -q --no-cache-dir dbt-synapse
+      - script: dbt deps
+      - script: dbt run
