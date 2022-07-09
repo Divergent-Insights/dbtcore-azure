@@ -13,9 +13,11 @@ stages:
   - job: dbtRun
     displayName: dbt Run
     steps:
-      - task: UserPythonVersion@0
+      - task: UsePythonVersion@0
         inputs:
           versionSpec: '3.7'
+          addToPath: true
+          architecture: 'x64'          
       - script: |
           pip install -q --upgrade pip setuptools wheel
           pip install -q --no-cache-dir dbt-core
