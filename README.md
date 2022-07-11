@@ -29,11 +29,11 @@ Consider this solution for:
 
 ## Workflow
 
-These are the different development workflows supported by the solution:
+These are the different development workflows supported by the solution: data transformations via dbt, dbt scheduling option 1, dbt scheduling option 2 and infrastructure as code deployment
 
-### Data Transformations (dbt)
+### Data Transformations via dbt
 
-1. A developer implements data transformations using dbt models
+1. A developer implements data transformations using dbt models (dbtproject)
 2. dbt models, which are made of SQL and Jinja, are version controlled using Azure DevOps Repos or GitHub
 3. Continuous integration triggers code linting using SQLFluff and testing using dbt's integration testing best practices
 4. Continuous deployment within Azure Pipelines triggers an automated deployment of dbt transformation models to a specific environment
@@ -41,7 +41,21 @@ These are the different development workflows supported by the solution:
 6. dbt models are scheduled via various methods such Azure Pipelines, Azure Functions, Azure Container Instance, and others
 7. dbt transformations are monitored
 
-### Infrastructure (Terraform)
+### dbt Scheduling Option 1
+
+1. An Azure Pipeline is configured to run on a regular basis (e.g. every 1 hour)
+2. The Azure Pipeline uses an image that is configured to run dbt e.g. Python, dbt profiles.yml, and dbt
+3. The Azure Pipeline obtains in a safely manner all credentials required to execute dbt and connect to the relevant database backend (e.g. Synapse)
+4. The Azure Pipeline executes "dbt run" and deploys any relevant changes applied to the dbt project (dbtproject)
+
+### dbt Scheduling Option 2
+
+1. An Azure Data Factory (ADF) Pipeline is configured to run on a regular basis (e.g. every 1 hour)
+2. The ADF Pipeline uses an image that is configured to run dbt e.g. Python, dbt profiles.yml, and dbt
+3. The ADF Pipeline obtains in a safely manner all credentials required to execute dbt and connect to the relevant database backend (e.g. Synapse)
+4. The ADF Pipeline executes "dbt run" and deploys any relevant changes applied to the dbt project (dbtproject)
+
+### Infrastructure as Code via Terraform
 
 1. A developer defines all required infrastructure as code via Terraform
 2. Infrastructure changes are version controlled using Azure DevOps Repos or GitHub
