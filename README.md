@@ -4,6 +4,8 @@
 
 This project provides an end-to-end, enterprise-ready, scalable and robust implementation of dbt on Azure
 
+![dbt + Azure + Terraform](dbt-azure-terraform.png)
+
 The solution realized by this project is characterized by the following:
 
 - Fully based on Microsoft Azure
@@ -31,60 +33,55 @@ These are the different development workflows supported by the solution:
 
 ### Data Transformations (dbt)
 
-1. A developer changes application source code.
-2. Application code including the web.config file is committed to the source code repository in Azure Repos.
-3. Continuous integration triggers application build and unit tests using Azure Test Plans.
-4. Continuous deployment within Azure Pipelines triggers an automated deployment of application artifacts with environment-specific configuration values.
-5. The artifacts are deployed to Azure App Service.
-6. Azure Application Insights collects and analyzes health, performance, and usage data.
-7. Developers monitor and manage health, performance, and usage information.
-8. Backlog information is used to prioritize new features and bug fixes using Azure Boards.
+1. A developer implements data transformations using dbt models
+2. dbt models, which are made of SQL and Jinja, are version controlled using Azure DevOps Repos or GitHub
+3. Continuous integration triggers code linting using SQLFluff and testing using dbt's integration testing best practices
+4. Continuous deployment within Azure Pipelines triggers an automated deployment of dbt transformation models to a specific environment
+5. dbt models are deployed to the configured database backend: Azure Synapse with Dedicated Pools
+6. dbt models are scheduled via various methods such Azure Pipelines, Azure Functions, Azure Container Instance, and others
+7. dbt transformations are monitored
 
 ### Infrastructure (Terraform)
 
-1. A developer changes application source code.
-2. Application code including the web.config file is committed to the source code repository in Azure Repos.
-3. Continuous integration triggers application build and unit tests using Azure Test Plans.
-4. Continuous deployment within Azure Pipelines triggers an automated deployment of application artifacts with environment-specific configuration values.
-5. The artifacts are deployed to Azure App Service.
-6. Azure Application Insights collects and analyzes health, performance, and usage data.
-7. Developers monitor and manage health, performance, and usage information.
-8. Backlog information is used to prioritize new features and bug fixes using Azure Boards.
+1. A developer defines all required infrastructure as code via Terraform
+2. Infrastructure changes are version controlled using Azure DevOps Repos or GitHub
+3. Continuous integration triggers code formatting, validation, planning and deployment
+4. Continuous deployment within Azure Pipelines triggers an automated deployment of infrastructure code to a specific environment5.
+5. Infrastructure is fully deployed to relevant environments: non-production or production
+6. Infrastrcuture is fully destroyed/updated from relevant environment: non-production or production
 
 ## Key Components
 
-- **Version Control** asdf adf
-- **dbt Scheduling 1** dff ads
-- **dbt Scheudling 2** asdf ad
-- **Infrastructure** dfasdf
+- **Version Control** - Git, GitHub or Azure Repos
+- **dbt Scheduling 1** - Azure Pipelines or GitHub Actions
+- **dbt Scheudling 2** - Azure Container Instance, dbt image, Azure Data Factory
+- **Infrastructure** - Azure Groups, Key Vault, Azure Data Factory, Azure Container Registry / Container Instance
 
 ## Alternatives
 
 ### Version Control
 
-adfasdfadfadfa
+- Azure DevOps Repos
+- GitHub
 
 ### dbt Scheduling
 
-adadfadfadfadfad
+- Basic Scheduling: Scheduled Azure DevOps Pipelines
+- Basic Scheduling: Scheduled Azure Container Instances
+- Advanced Scheduling: Self-hosted scheduler such as Airflow or Dagster
+- Advanced Scheduling: Managed scheduler such as Airflow, Dagster or Prefect
 
 ## Considerations
 
 ### Security
 
-- One
-- Two
+- All credentials are generated automatically and fetched safely programmatically via Azure Key Vault
+- Where possible Azure Managed Identities or Azure Service Principals are prioritized and utilized
 
 ### Costs
 
-- One
-- Two
-
-## Deploying this solution
-
-### Prerequisites
-
-### Walk-through
+- Automated restart/pause of Azure Synapse Dedicated Pools can easily be realized via Azure Pipelines or Azure Data Factory
+- dbt Scheduling Costs: Azure Pipelines vs Azure Data Factory + Azure Container Instance
 
 ## Additional Enhancements
 
