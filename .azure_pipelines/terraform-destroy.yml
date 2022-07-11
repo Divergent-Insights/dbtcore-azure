@@ -28,7 +28,7 @@ stages:
             backendServiceArm: 'terraform'
             # Subscription id of the target backend. This can be used to specify the subscription when using Management Group scoped
             # Service connection or to override the subscription id defined in a Subscription scoped service connection
-            backendAzureRmSubscriptionId: '9feb9ec3-d1be-4df4-8af9-b7a8da1e3de6'
+            #backendAzureRmSubscriptionId: '9feb9ec3-d1be-4df4-8af9-b7a8da1e3de6'
             # create backend storage account if doesn't exist
             ensureBackend: true
             backendAzureRmResourceGroupName: 'tfstate'
