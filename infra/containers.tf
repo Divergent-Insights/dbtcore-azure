@@ -1,3 +1,5 @@
+# © 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
+
 # Container registry
 resource "azurerm_container_registry" "acr" {
   name                = "cr${var.stack_name}"
@@ -10,34 +12,32 @@ resource "azurerm_container_registry" "acr" {
 # Creating Docker image manually
 resource "null_resource" "build_dbtcore_image" {
 
-  triggers = {
-    always_run = "${timestamp()}"
-  }
+  # You can uncomment this to aid local development and testing
+  #triggers = {
+  #  always_run = "${timestamp()}"
+  #}
 
   provisioner "local-exec" {
-    command = <<BUILD_CMD_EOF
-      az acr login --name crdbtcoreazure
-      az acr build -t divergent-insights/dbtcore-azure:v1 --registry crdbtcoreazure ../dbtcore_image
-    BUILD_CMD_EOF
+    command = "az acr login --name $ACR_NAME && az acr build -t $IMAGE_TAG --registry $ACR_NAME ../dbtcore_image"
+
+    # You can uncomment this to force using Powershell
+    #interpreter = ["Powershell", "-Command"]
 
     environment = {
-      ACR       = azurerm_container_registry.acr.name
+      ACR_NAME  = azurerm_container_registry.acr.name
       IMAGE_TAG = var.dbtcore_image_tag
     }
   }
   depends_on = [azurerm_container_registry.acr]
 }
 
+# Create the relevant Azure Container group to run the dbt image
 resource "azurerm_container_group" "acg_dbt" {
   name                = "cg${var.stack_name}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   restart_policy      = "Never"
   os_type             = "Linux"
-
-  # Though this is not needed, its a current bug in the provider. we are
-  # opening up a dummy port for now. may be in the future this will get fixed.
-  #ip_address_type = "Public"
 
   identity {
     type         = "UserAssigned"
@@ -47,21 +47,23 @@ resource "azurerm_container_group" "acg_dbt" {
   image_registry_credential {
     server   = azurerm_container_registry.acr.login_server
     username = data.azurerm_client_config.current.client_id
-    password = var.terraform_service_principal_secret
+    password = var.TERRAFORM_SERVICE_PRINCIPAL_SECRET
   }
 
   container {
     name   = "dbtcoreazure"
-    image  = "${azurerm_container_registry.acr.login_server}/${var.dbtcore_image_tag}:v1"
+    image  = "${azurerm_container_registry.acr.login_server}/${var.dbtcore_image_tag}"
     cpu    = 1
     memory = 1
     environment_variables = {
-      #"ENV_AZSUB"        = data.azurerm_client_config.current.subscription_id
-      #"ENV_RG"           = azurerm_resource_group.rg.name
-      #"ENV_KV_URL"       = azurerm_key_vault.kv.vault_uri
-      #"ENV_KV_SFLK"      = azurerm_key_vault_secret.kvs_sflk_conn.name
-      "ENV_DBT_PROJECT_TAR" = "/volume-dbt-projects/data.tar"
-      #"ENV_DBT_RUN_CMD"  = "dbtcore_image/dbt_datapipeline.sh"
+      "ENV_DBT_PROJECT_TAR"  = "/volume-dbt-projects/dbtproject.tar"
+      "DBT_SYNAPSE_SERVER"   = azurerm_synapse_workspace.this.name
+      "DBT_SYNAPSE_DATABASE" = azurerm_synapse_sql_pool.this.name
+    }
+
+    secure_environment_variables = {
+      "DBT_SYNAPSE_USER"     = azurerm_key_vault_secret.sql_administrator_login.value
+      "DBT_SYNAPSE_PASSWORD" = azurerm_key_vault_secret.sql_administrator_login_password.value
     }
 
     volume {
@@ -84,21 +86,23 @@ resource "azurerm_container_group" "acg_dbt" {
   tags       = var.custom_tags
 }
 
+# Package the dbt project and upload on the Storage Account/Share
 resource "null_resource" "dbt_project_tar" {
 
   triggers = {
     always_run = "${timestamp()}"
   }
-      #tar -cvzf ../data.tar ../data
-  provisioner "local-exec" {
-    command = "az storage file upload --share-name share --source ../data.tar --account-name $env:storage_account_name --account-key $env:storage_account_pak"
 
-    interpreter = ["Powershell", "-Command"]
+  provisioner "local-exec" {
+    command = "cd .. && tar -cvzf dbtproject.tar dbtproject && az storage file upload --share-name $STORAGE_SHARE_NAME --source dbtproject.tar --account-name $STORAGE_ACCOUNT_NAME --account-key $STORAGE_ACCOUNT_PAK"
+
+    # You can uncomment this to force using Powershell
+    #interpreter = ["Powershell", "-Command"]
 
     environment = {
-      storage_share_name   = azurerm_storage_share.dbtcoreazure.name
-      storage_account_name = azurerm_storage_account.dbtcoreazure.name
-      storage_account_pak  = azurerm_storage_account.dbtcoreazure.primary_access_key
+      STORAGE_SHARE_NAME   = azurerm_storage_share.dbtcoreazure.name
+      STORAGE_ACCOUNT_NAME = azurerm_storage_account.dbtcoreazure.name
+      STORAGE_ACCOUNT_PAK  = azurerm_storage_account.dbtcoreazure.primary_access_key
     }
   }
 }

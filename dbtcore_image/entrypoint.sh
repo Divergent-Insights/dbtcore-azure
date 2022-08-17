@@ -1,8 +1,13 @@
-#!/bin/bash
+# © 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
+
+#!/bin/sh
 
 echo "Copying and untaring dbt project"
-cp $ENV_DBT_PROJECT_TAR /tmp
-tar -xvf /tmp/data.tar
-ls -l /tmp/data/
+cp $ENV_DBT_PROJECT_TAR /
+tar -xvf /dbtproject.tar
+ls -l /dbtproject
+ls -l $HOME/.dbt
 
-#/run_pipeline.sh "$ENV_DBT_RUN_CMD"
+cd /dbtproject
+dbt debug
+dbt run

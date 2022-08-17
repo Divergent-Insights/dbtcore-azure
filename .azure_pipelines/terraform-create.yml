@@ -1,0 +1,66 @@
+# © 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
+
+name: infra-create
+
+# Uncomment and add any relevant triggers e.g. on push, pr, or merge into main
+#trigger:
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: dbtcore-azure
+
+stages:
+- stage: InfraCreate
+  displayName: 'InfrastructureCreate'
+  jobs:
+    - job: TerraformApply
+      displayName: Terraform Apply
+      steps:
+        - script: echo $ARM_TENANT_ID
+
+        - task: TerraformInstaller@0
+          displayName: Installing Terraform
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformCLI@0
+          displayName: terraform init
+          inputs:
+            allowTelemetryCollection: false
+            command: init
+            workingDirectory: 'infra/'
+            backendType: azurerm
+            # Service connection to authorize backend access. Supports Subscription & Management Group Scope
+            backendServiceArm: 'terraform'
+            # Subscription id of the target backend. This can be used to specify the subscription when using Management Group scoped
+            # Service connection or to override the subscription id defined in a Subscription scoped service connection
+            #backendAzureRmSubscriptionId: 'my-backend-subscription-id'
+            # create backend storage account if doesn't exist
+            ensureBackend: true
+            backendAzureRmResourceGroupName: 'tfstate'
+            # azure location shortname of the backend resource group and storage account
+            backendAzureRmResourceGroupLocation: 'eastus'
+            backendAzureRmStorageAccountName: 'tfstate3772'
+            # azure storage account sku, used when creating the storage account
+            backendAzureRmStorageAccountSku: 'Standard_RAGRS'
+            # azure blob container to store the state file
+            backendAzureRmContainerName: 'tfstate'
+            # azure blob file name
+            backendAzureRmKey: terraform.tfstate
+        - task: TerraformCLI@0
+          displayName: terraform validate
+          inputs:
+            allowTelemetryCollection: false
+            command: 'validate'
+            workingDirectory: 'infra/'
+
+        - task: TerraformCLI@0
+          displayName: terraform apply
+          inputs:
+            allowTelemetryCollection: false
+            command: 'apply'
+            workingDirectory: 'infra/'
+            environmentServiceName: 'terraform'
+            runAzLogin: true
+            commandOptions: -input=false -var "SYNAPSE_LOGIN_PASSWORD=$(TF_VAR_SYNAPSE_LOGIN_PASSWORD)" -var "TERRAFORM_SERVICE_PRINCIPAL_SECRET=$(TF_VAR_TERRAFORM_SERVICE_PRINCIPAL_SECRET)"

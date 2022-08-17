@@ -193,6 +193,7 @@ cython_debug/
 
 
 ### dbt ###
-/data/target/
-/data/packages/
-/data/logs/
+/dbtproject/target/
+/dbtproject/packages/
+/dbtproject/logs/
+dbtproject.tar

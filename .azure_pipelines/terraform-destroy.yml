@@ -1,0 +1,63 @@
+# © 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
+
+name: infra-destroy
+
+# Uncomment and add any relevant triggers e.g. on push, pr, or merge into main
+#trigger:
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: dbtcore-azure
+
+stages:
+- stage: InfraDestroy
+  displayName: 'Infrastructure Destroy'
+  jobs:
+    - job: TerraformDestroy
+      displayName: Terraform Destroy
+      steps:
+        - task: TerraformInstaller@0
+          displayName: Installing Terraform
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformCLI@0
+          displayName: terraform init
+          inputs:
+            allowTelemetryCollection: false
+            command: init
+            workingDirectory: 'infra/'
+            backendType: azurerm
+            # Service connection to authorize backend access. Supports Subscription & Management Group Scope
+            backendServiceArm: 'terraform'
+            # Subscription id of the target backend. This can be used to specify the subscription when using Management Group scoped
+            # Service connection or to override the subscription id defined in a Subscription scoped service connection
+            #backendAzureRmSubscriptionId: '9feb9ec3-d1be-4df4-8af9-b7a8da1e3de6'
+            # create backend storage account if doesn't exist
+            ensureBackend: true
+            backendAzureRmResourceGroupName: 'tfstate'
+            # azure location shortname of the backend resource group and storage account
+            backendAzureRmResourceGroupLocation: 'eastus'
+            backendAzureRmStorageAccountName: 'tfstate3772'
+            # azure storage account sku, used when creating the storage account
+            backendAzureRmStorageAccountSku: 'Standard_RAGRS'
+            # azure blob container to store the state file
+            backendAzureRmContainerName: 'tfstate'
+            # azure blob file name
+            backendAzureRmKey: terraform.tfstate
+        - task: TerraformCLI@0
+          displayName: terraform validate
+          inputs:
+            command: 'validate'
+            workingDirectory: 'infra/'
+            allowTelemetryCollection: false
+        - task: TerraformCLI@0
+          displayName: terraform destroy
+          inputs:
+            allowTelemetryCollection: false
+            environmentServiceName: 'terraform'
+            command: 'destroy'
+            workingDirectory: 'infra/'
+            runAzLogin: true
+            commandOptions: -input=false -var "SYNAPSE_LOGIN_PASSWORD=$(TF_VAR_SYNAPSE_LOGIN_PASSWORD)" -var "TERRAFORM_SERVICE_PRINCIPAL_SECRET=$(TF_VAR_TERRAFORM_SERVICE_PRINCIPAL_SECRET)"

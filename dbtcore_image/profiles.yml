@@ -1,0 +1,17 @@
+# © 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
+
+config:
+  send_anonymous_usage_stats: false
+
+dbtcore_azure:
+  target: synapse
+  outputs:
+    synapse:
+      type: synapse
+      driver: 'ODBC Driver 17 for SQL Server'
+      server: "{{ env_var('DBT_SYNAPSE_SERVER') }}.sql.azuresynapse.net"
+      port: 1433
+      database: "{{ env_var('DBT_SYNAPSE_DATABASE') }}"
+      schema: schema_name
+      user: "{{ env_var('DBT_SYNAPSE_USER') }}"
+      password: "{{ env_var('DBT_SYNAPSE_PASSWORD') }}"

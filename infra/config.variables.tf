@@ -1,16 +1,19 @@
-# Copyright (C) 2022 Divergent Insights Pty Ltd - All Rights Reserved
-# You may use, distribute and modify this code under the
-# terms of the XYZ license.
-# # You should have received a copy of the XYZ license with
-# this file. If not, please write to: copyright@divergentinsights.com.au, or visit https://divergentinsights/copyright
-
+# © 2022 Divergent Insights Pty Ltd - <info@divergentinsights.com.au>
 
 variable "stack_name" {
   description = "The name of the stack"
   default     = "dbtcoreazure"
 }
 
-variable "terraform_service_principal_secret" {
+# Uppercase required due to ADO limitations
+# See: https://gaunacode.com/terraform-input-variables-using-azure-devops
+variable "TERRAFORM_SERVICE_PRINCIPAL_SECRET" {
+  description = "Terraform Service Principal secret"
+}
+
+# Uppercase required due to ADO limitations
+# See: https://gaunacode.com/terraform-input-variables-using-azure-devops
+variable "SYNAPSE_LOGIN_PASSWORD" {
   description = "Terraform Service Principal secret"
 }
 
@@ -40,5 +43,5 @@ variable "custom_tags" {
 }
 
 variable "dbtcore_image_tag" {
-  default = "divergent-insights/dbtcore-azure"
+  default = "divergent-insights/dbtcore-azure:v1"
 }
