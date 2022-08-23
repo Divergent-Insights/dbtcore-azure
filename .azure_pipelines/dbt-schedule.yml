@@ -2,13 +2,13 @@
 
 name: dbt-schedule
 
-schedules:
-- cron: "*/5 * * * *"
-  displayName: Every 5 minutes (for demo purposes, adjust as required)
-  branches:
-    include:
-    - main
-  always: true
+#schedules:
+#- cron: "*/5 * * * *"
+#  displayName: Every 5 minutes (for demo purposes, adjust as required)
+#  branches:
+#    include:
+#    - main
+#  always: true
 
 pool:
   vmImage: ubuntu-latest
